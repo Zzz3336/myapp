@@ -10,19 +10,14 @@ var bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var productsRouter = require('./routes/products')
 
 var app = express();
 
-app.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3001'); //当允许携带cookies此处的白名单不能写’*’
-  res.header('Access-Control-Allow-Headers', 'content-type,Content-Length, Authorization,Origin,Accept,X-Requested-With'); //允许的请求头
-  res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT'); //允许的请求方法
-  res.header('Access-Control-Allow-Credentials', true); //允许携带cookies
-  next();
-});
+app.use(cors())
 
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: false
 }))
 app.use(bodyParser.json())
 
@@ -40,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/products', productsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
