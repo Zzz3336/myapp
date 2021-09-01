@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+/*通用*/
+.w {
+  width: 80%;
+  margin: 0 auto;
+}
+
+
+/*login*/
+.login {
+  background-image: url('../image/bg.jpeg');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 100vh;
+}
+
+.login>.form {
+  background-color: #ecf0f1;
+  width: 400px;
+  height: 250px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  border-radius: 5%;
+  opacity: .9;
+}
+
+
+.login>.form>.el-form {
+  margin-top: 10%;
+  margin-left: 10%;
+}
+
+.login>.form .el-input {
+  width: 70%;
+}
+
+
+/*main*/
+.main {
+  height: 10vh;
+  border-bottom: 2px solid #dfe6e9;
+}
+
+
+.main>.header>.left {
+  float: left;
+}
+
+.main>.header>.left>.title {
+  font-size: 50px;
+  font-weight: bold;
+  line-height: 10vh;
+  color: #74b9ff;
+  position: absolute;
+  left: 10%;
+}
+
+.main>.header>.right {
+  float: right;
+}
+
+.main>.header>.right>ul {
+  list-style: none;
+  position: absolute;
+  right: 150px;
+}
+
+.main>.header>.right>ul>li {
+  float: left;
+}
+
+.main>.header>.right>ul>li>.el-button {
+  margin-right: 10px;
+  height: 40px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.main>.header>.right>ul>li:nth-child(1)>.el-input {
+  width: 70%;
+}
+
+/* table */
+.table {
+  position: absolute;
+  top: 12%;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* addForm */
+.addForm,
+.updateForm {
+  width: 50%;
+  margin: 50px auto;
+
+}
+
+.addForm .el-select,
+.updateForm .el-select {
+  width: 100%;
+}
