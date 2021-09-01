@@ -9,15 +9,15 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var productsRouter = require('./routes/products')
+var usersRouter = require('./routes/api/users');
+var studentsRouter = require('./routes/api/students')
 
 var app = express();
 
 app.use(cors())
 
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }))
 app.use(bodyParser.json())
 
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/products', productsRouter);
+app.use('/students', studentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -8,11 +8,5 @@ router.get('/', function (req, res, next) {
   });
 });
 
-router.get('/first', function (req, res, next) {
-  res.json({
-    name: 'aaa',
-    pwd: 'bbb'
-  })
-});
 
 module.exports = router;
