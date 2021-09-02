@@ -17,6 +17,9 @@
           <li>
             <el-button size="small" @click="addButton">录入</el-button>
           </li>
+          <li>
+            <el-button size="small" @click="staButton">统计</el-button>
+          </li>
         </ul>
       </div>
     </div>
@@ -107,15 +110,30 @@
             <el-option label="艺术" value="艺术"></el-option>
             <el-option label="财经" value="财经"></el-option>
             <el-option label="外语" value="外语"></el-option>
+            <el-option label="建筑" value="建筑"></el-option>
+            <el-option label="电气" value="电气"></el-option>
+            <el-option label="体育" value="体育"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="班级">
           <el-select v-model="addForm.banJi" placeholder="请选择班级">
             <el-option label="软件工程" value="软件工程"></el-option>
-            <el-option label="计算机与科学" value="计算机与科学"></el-option>
-            <el-option label="英语" value="英语"></el-option>
-            <el-option label="电气" value="电气"></el-option>
+            <el-option label="大数据" value="大数据"></el-option>
+            <el-option label="工商管理" value="工商管理"></el-option>
+            <el-option label="市场营销" value="市场营销"></el-option>
             <el-option label="视觉传达" value="视觉传达"></el-option>
+            <el-option label="新媒体" value="新媒体"></el-option>
+            <el-option label="经济学" value="经济学"></el-option>
+            <el-option label="英语" value="英语"></el-option>
+            <el-option label="德语" value="德语"></el-option>
+            <el-option label="法语" value="法语"></el-option>
+            <el-option label="俄语" value="俄语"></el-option>
+            <el-option label="建筑设计" value="建筑设计"></el-option>
+            <el-option label="风景园林" value="风景园林"></el-option>
+            <el-option label="电力系统及其自动化" value="电力系统及其自动化"></el-option>
+            <el-option label="电工理论与新技术" value="电工理论与新技术"></el-option>
+            <el-option label="体育教育" value="体育教育"></el-option>
+            <el-option label="运动康复" value="运动康复"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入学时间" prop="timeIn">
@@ -145,15 +163,6 @@
         <el-form-item label="姓名" prop="stuName">
           <el-input v-model="updateForm.stuName"></el-input>
         </el-form-item>
-        <el-form-item label="班级">
-          <el-select v-model="updateForm.banJi" placeholder="请选择班级">
-            <el-option label="软件工程" value="软件工程"></el-option>
-            <el-option label="计算机与科学" value="计算机与科学"></el-option>
-            <el-option label="英语" value="英语"></el-option>
-            <el-option label="电气" value="电气"></el-option>
-            <el-option label="视觉传达" value="视觉传达"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="学院">
           <el-select v-model="updateForm.xueYuan" placeholder="请选择学院">
             <el-option label="大数据" value="大数据"></el-option>
@@ -162,6 +171,30 @@
             <el-option label="艺术" value="艺术"></el-option>
             <el-option label="财经" value="财经"></el-option>
             <el-option label="外语" value="外语"></el-option>
+            <el-option label="建筑" value="建筑"></el-option>
+            <el-option label="电气" value="电气"></el-option>
+            <el-option label="体育" value="体育"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="班级">
+          <el-select v-model="updateForm.banJi" placeholder="请选择班级">
+            <el-option label="软件工程" value="软件工程"></el-option>
+            <el-option label="大数据" value="大数据"></el-option>
+            <el-option label="工商管理" value="工商管理"></el-option>
+            <el-option label="市场营销" value="市场营销"></el-option>
+            <el-option label="视觉传达" value="视觉传达"></el-option>
+            <el-option label="新媒体" value="新媒体"></el-option>
+            <el-option label="经济学" value="经济学"></el-option>
+            <el-option label="英语" value="英语"></el-option>
+            <el-option label="德语" value="德语"></el-option>
+            <el-option label="法语" value="法语"></el-option>
+            <el-option label="俄语" value="俄语"></el-option>
+            <el-option label="建筑设计" value="建筑设计"></el-option>
+            <el-option label="风景园林" value="风景园林"></el-option>
+            <el-option label="电力系统及其自动化" value="电力系统及其自动化"></el-option>
+            <el-option label="电工理论与新技术" value="电工理论与新技术"></el-option>
+            <el-option label="体育教育" value="体育教育"></el-option>
+            <el-option label="运动康复" value="运动康复"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
@@ -175,6 +208,20 @@
           <el-button @click="resetaddForm('updateForm')">重置</el-button>
         </el-form-item>
       </el-form>
+
+      <div class="statistics" v-show="staShow">
+        <div class="selectSta">
+          <el-select v-model="value" placeholder="请选择方式" size="small" @change="selSta(value)">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <div id="tongji"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -232,7 +279,7 @@ export default {
       },
 
       // 分页
-      pageSize: 5,
+      pageSize: 10,
       total: 0,
       currentPage: 1,
 
@@ -245,6 +292,7 @@ export default {
       selectShow: false,
       addShow: false,
       updateShow: false,
+      staShow: false,
 
       //接口url
       url: "http://localhost:3000",
@@ -338,7 +386,20 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+
+      //统计选择器
+      options: [
+        {
+          value: "学院",
+          label: "学院"
+        },
+        {
+          value: "班级",
+          label: "班级"
+        }
+      ],
+      value: ""
     };
   },
   mounted() {
@@ -354,6 +415,7 @@ export default {
       this.selectShow = false;
       this.addShow = false;
       this.updateShow = false;
+      this.staShow = false;
     },
     /**
      * <录入>按钮
@@ -364,7 +426,21 @@ export default {
       this.paginationShow = false;
       this.selectShow = false;
       this.updateShow = false;
+      this.staShow = false;
     },
+    /**
+     * <统计>按钮
+     */
+    staButton() {
+      this.staShow = true;
+
+      this.tableShow = false;
+      this.paginationShow = false;
+      this.addShow = false;
+      this.selectShow = false;
+      this.updateShow = false;
+    },
+
     /**
      * 修改表单
      */
@@ -381,6 +457,7 @@ export default {
       this.paginationShow = false;
       this.addShow = false;
       this.selectShow = false;
+      this.staShow = false;
     },
 
     /**
@@ -438,6 +515,7 @@ export default {
                 that.selectShow = false;
                 that.selectData = [];
                 that.loadTable();
+                that.selSta();
               },
               err => {
                 console.log(err);
@@ -481,6 +559,7 @@ export default {
                       this.tableShow = true;
                       this.paginationShow = true;
                       this.updateShow = false;
+                      this.staShow = false;
                       that.loadTable();
                     } else if (res.data.status == 404) {
                       this.$message.error("已存在信息，手机号、邮箱已被使用");
@@ -510,11 +589,12 @@ export default {
         });
       } else {
         this.selectData = [];
+        this.selectShow = true;
         this.tableShow = false;
         this.paginationShow = false;
         this.addShow = false;
-        this.selectShow = true;
         this.updateShow = false;
+        this.staShow = false;
 
         await this.$axios
           .get(this.url + "/students/getStubystuId", {
@@ -555,11 +635,13 @@ export default {
                 })
                 .then(res => {
                   if (res.data.status == 200) {
+                    that.staShow = false;
                     that.addShow = false;
                     that.tableShow = true;
                     that.paginationShow = true;
                     that.loadTable();
                     that.addForm = {};
+                    that.selSta();
                   } else if (res.data.status == 404) {
                     this.$message.error(
                       "已存在信息，学号、手机号、邮箱已被使用"
@@ -582,6 +664,146 @@ export default {
      */
     resetaddForm(formName) {
       this.$refs[formName].resetFields();
+    },
+
+    /**
+     * 统计
+     */
+    async selSta(value) {
+      var ecaharts = require("echarts");
+      var myChart = ecaharts.init(document.getElementById("tongji"));
+
+      var that = this;
+      if (this.value == "学院") {
+        await this.$axios
+          .get(that.url + "/statistics/selSta", {
+            params: { howtosel: that.value }
+          })
+          .then(
+            res => {
+              myChart.setOption({
+                tooltip: {
+                  trigger: "item"
+                },
+                legend: {
+                  top: "5%",
+                  left: "center"
+                },
+                series: [
+                  {
+                    name: "人数",
+                    type: "pie",
+                    radius: ["40%", "70%"],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                      borderRadius: 10,
+                      borderColor: "#fff",
+                      borderWidth: 2
+                    },
+                    label: {
+                      show: false,
+                      position: "center"
+                    },
+                    emphasis: {
+                      label: {
+                        show: true,
+                        fontSize: "40",
+                        fontWeight: "bold"
+                      }
+                    },
+                    labelLine: {
+                      show: false
+                    },
+                    data: [
+                      { value: res.data.dsg.length, name: "大数据" },
+                      { value: res.data.jsj.length, name: "计算机" },
+                      { value: res.data.gl.length, name: "管理" },
+                      { value: res.data.ys.length, name: "艺术" },
+                      { value: res.data.cj.length, name: "财经" },
+                      { value: res.data.wy.length, name: "外语" },
+                      { value: res.data.jz.length, name: "建筑" },
+                      { value: res.data.dq.length, name: "电气" },
+                      { value: res.data.ty.length, name: "体育" }
+                    ]
+                  }
+                ]
+              });
+            },
+            err => {
+              console.log(err);
+            }
+          );
+      } else if (this.value == "班级") {
+        await this.$axios
+          .get(that.url + "/statistics/selSta", {
+            params: { howtosel: that.value }
+          })
+          .then(
+            res => {
+              myChart.setOption({
+                tooltip: {
+                  trigger: "item"
+                },
+                legend: {
+                  top: "5%",
+                  left: "center"
+                },
+                series: [
+                  {
+                    name: "人数",
+                    type: "pie",
+                    radius: ["40%", "70%"],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                      borderRadius: 10,
+                      borderColor: "#fff",
+                      borderWidth: 2
+                    },
+                    label: {
+                      show: false,
+                      position: "center"
+                    },
+                    emphasis: {
+                      label: {
+                        show: true,
+                        fontSize: "40",
+                        fontWeight: "bold"
+                      }
+                    },
+                    labelLine: {
+                      show: false
+                    },
+                    data: [
+                      { value: res.data.rjgc.length, name: "软件工程" },
+                      { value: res.data.dsj.length, name: "大数据" },
+                      { value: res.data.gsgl.length, name: "工商管理" },
+                      { value: res.data.scyx.length, name: "市场营销" },
+                      { value: res.data.sjcd.length, name: "视觉传达" },
+                      { value: res.data.xmt.length, name: "新媒体" },
+                      { value: res.data.jjx.length, name: "经济学" },
+                      { value: res.data.yy.length, name: "英语" },
+                      { value: res.data.dy.length, name: "德语" },
+                      { value: res.data.fy.length, name: "法语" },
+                      { value: res.data.ey.length, name: "俄语" },
+                      { value: res.data.jzsj.length, name: "建筑设计" },
+                      { value: res.data.fjyl.length, name: "风景园林" },
+                      {
+                        value: res.data.zdh.length,
+                        name: "电力系统及其自动化"
+                      },
+                      { value: res.data.xjs.length, name: "电工理论与新技术" },
+                      { value: res.data.tyjy.length, name: "体育教育" },
+                      { value: res.data.ydkf.length, name: "运动康复" }
+                    ]
+                  }
+                ]
+              });
+            },
+            err => {
+              console.log(err);
+            }
+          );
+      }
     }
   }
 };

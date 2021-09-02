@@ -108,3 +108,24 @@ body {
 .updateForm .el-select {
   width: 100%;
 }
+
+/*statistics统计*/
+.statistics {
+  width: 100%;
+  height: 80vh;
+}
+
+.statistics>.selectSta {
+  width: 100%;
+}
+
+.statistics>.selectSta>.el-select {
+  float: left;
+}
+
+#tongji {
+  position: absolute;
+  top: 5vh;
+  width: 100%;
+  height: 75vh;
+}
