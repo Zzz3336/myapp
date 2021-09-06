@@ -226,6 +226,7 @@
   </div>
 </template>
 <script>
+import { get, post } from "../network/request";
 export default {
   data() {
     function checkPhone(rule, value, callback) {
@@ -465,17 +466,14 @@ export default {
      */
     async loadTable() {
       this.loading = true;
-      await this.$axios
-        .post(this.url + "/students/getStudata", {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        })
-        .then(res => {
-          this.loading = false;
-          this.stuData = res.data.students;
-          this.total = res.data.pagination.total;
-          // console.log(res);
-        });
+      await post("/students/getStudata", {
+        currentPage: this.currentPage,
+        pageSize: this.pageSize
+      }).then(res => {
+        this.loading = false;
+        this.stuData = res.data.students;
+        this.total = res.data.pagination.total;
+      });
     },
     /**
      * 分页
@@ -504,23 +502,21 @@ export default {
       })
         .then(() => {
           var that = this;
-          this.$axios
-            .get(that.url + "/students/delBystuid", {
-              params: { stuId: rows[index].stuId }
-            })
-            .then(
-              res => {
-                that.tableShow = true;
-                that.paginationShow = true;
-                that.selectShow = false;
-                that.selectData = [];
-                that.loadTable();
-                that.selSta();
-              },
-              err => {
-                console.log(err);
-              }
-            );
+          get("/students/delBystuid", {
+            params: { stuId: rows[index].stuId }
+          }).then(
+            res => {
+              that.tableShow = true;
+              that.paginationShow = true;
+              that.selectShow = false;
+              that.selectData = [];
+              that.loadTable();
+              that.selSta();
+            },
+            err => {
+              console.log(err);
+            }
+          );
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -547,28 +543,24 @@ export default {
           })
             .then(() => {
               var that = this;
-              this.$axios
-                .post(that.url + "/students/updateStu", {
-                  params: {
-                    stu: that.updateForm
+              post("/students/updateStu", {
+                stu: that.updateForm
+              }).then(
+                res => {
+                  if (res.data.status == 200) {
+                    this.tableShow = true;
+                    this.paginationShow = true;
+                    this.updateShow = false;
+                    this.staShow = false;
+                    that.loadTable();
+                  } else if (res.data.status == 404) {
+                    this.$message.error("已存在信息，手机号、邮箱已被使用");
                   }
-                })
-                .then(
-                  res => {
-                    if (res.data.status == 200) {
-                      this.tableShow = true;
-                      this.paginationShow = true;
-                      this.updateShow = false;
-                      this.staShow = false;
-                      that.loadTable();
-                    } else if (res.data.status == 404) {
-                      this.$message.error("已存在信息，手机号、邮箱已被使用");
-                    }
-                  },
-                  err => {
-                    console.log(err);
-                  }
-                );
+                },
+                err => {
+                  console.log(err);
+                }
+              );
             })
             .catch(() => {});
         } else {
@@ -596,23 +588,21 @@ export default {
         this.updateShow = false;
         this.staShow = false;
 
-        await this.$axios
-          .get(this.url + "/students/getStubystuId", {
-            params: {
-              stuId: this.selectBystuid
+        await get("/students/getStubystuId", {
+          params: {
+            stuId: this.selectBystuid
+          }
+        }).then(
+          res => {
+            if (res.data.result !== null) {
+              this.selectData.unshift(res.data.result);
             }
-          })
-          .then(
-            res => {
-              if (res.data.result !== null) {
-                this.selectData.unshift(res.data.result);
-              }
-              this.selectBystuid = "";
-            },
-            err => {
-              console.log(err);
-            }
-          );
+            this.selectBystuid = "";
+          },
+          err => {
+            console.log(err);
+          }
+        );
       }
     },
 
@@ -629,26 +619,22 @@ export default {
           }).then(
             () => {
               var that = this;
-              this.$axios
-                .post(that.url + "/students/addNewstu", {
-                  stu: that.addForm
-                })
-                .then(res => {
-                  if (res.data.status == 200) {
-                    that.staShow = false;
-                    that.addShow = false;
-                    that.tableShow = true;
-                    that.paginationShow = true;
-                    that.loadTable();
-                    that.addForm = {};
-                    that.selSta();
-                  } else if (res.data.status == 404) {
-                    this.$message.error(
-                      "已存在信息，学号、手机号、邮箱已被使用"
-                    );
-                    that.addForm = {};
-                  }
-                });
+              post("/students/addNewstu", {
+                stu: that.addForm
+              }).then(res => {
+                if (res.data.status == 200) {
+                  that.staShow = false;
+                  that.addShow = false;
+                  that.tableShow = true;
+                  that.paginationShow = true;
+                  that.loadTable();
+                  that.addForm = {};
+                  that.selSta();
+                } else if (res.data.status == 404) {
+                  this.$message.error("已存在信息，学号、手机号、邮箱已被使用");
+                  that.addForm = {};
+                }
+              });
             },
             err => {}
           );
@@ -675,64 +661,62 @@ export default {
 
       var that = this;
       if (this.value == "学院") {
-        await this.$axios
-          .get(that.url + "/statistics/selSta", {
-            params: { howtosel: that.value }
-          })
-          .then(
-            res => {
-              myChart.setOption({
-                tooltip: {
-                  trigger: "item"
-                },
-                legend: {
-                  top: "5%",
-                  left: "center"
-                },
-                series: [
-                  {
-                    name: "人数",
-                    type: "pie",
-                    radius: ["40%", "70%"],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                      borderRadius: 10,
-                      borderColor: "#fff",
-                      borderWidth: 2
-                    },
+        await get("/statistics/selSta", {
+          params: { howtosel: that.value }
+        }).then(
+          res => {
+            myChart.setOption({
+              tooltip: {
+                trigger: "item"
+              },
+              legend: {
+                top: "5%",
+                left: "center"
+              },
+              series: [
+                {
+                  name: "人数",
+                  type: "pie",
+                  radius: ["40%", "70%"],
+                  avoidLabelOverlap: false,
+                  itemStyle: {
+                    borderRadius: 10,
+                    borderColor: "#fff",
+                    borderWidth: 2
+                  },
+                  label: {
+                    show: false,
+                    position: "center"
+                  },
+                  emphasis: {
                     label: {
-                      show: false,
-                      position: "center"
-                    },
-                    emphasis: {
-                      label: {
-                        show: true,
-                        fontSize: "40",
-                        fontWeight: "bold"
-                      }
-                    },
-                    labelLine: {
-                      show: false
-                    },
-                    data: [
-                      { value: res.data.dsg.length, name: "大数据" },
-                      { value: res.data.jsj.length, name: "计算机" },
-                      { value: res.data.gl.length, name: "管理" },
-                      { value: res.data.ys.length, name: "艺术" },
-                      { value: res.data.cj.length, name: "财经" },
-                      { value: res.data.wy.length, name: "外语" },
-                      { value: res.data.jz.length, name: "建筑" },
-                      { value: res.data.dq.length, name: "电气" },
-                      { value: res.data.ty.length, name: "体育" }
-                    ]
-                  }
-                ]
-              });
-            },
-            err => {
-              console.log(err);
-            }
-          );
+                      show: true,
+                      fontSize: "40",
+                      fontWeight: "bold"
+                    }
+                  },
+                  labelLine: {
+                    show: false
+                  },
+                  data: [
+                    { value: res.data.dsg.length, name: "大数据" },
+                    { value: res.data.jsj.length, name: "计算机" },
+                    { value: res.data.gl.length, name: "管理" },
+                    { value: res.data.ys.length, name: "艺术" },
+                    { value: res.data.cj.length, name: "财经" },
+                    { value: res.data.wy.length, name: "外语" },
+                    { value: res.data.jz.length, name: "建筑" },
+                    { value: res.data.dq.length, name: "电气" },
+                    { value: res.data.ty.length, name: "体育" }
+                  ]
+                }
+              ]
+            });
+          },
+          err => {
+            console.log(err);
+          }
+        );
       } else if (this.value == "班级") {
         await this.$axios
           .get(that.url + "/statistics/selSta", {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Student = require('../../models/Student')
+var Student = require('../../models/Student');
 
 /**
  * 获取学生列表
@@ -89,8 +89,7 @@ router.get('/delBystuid', async (req, res, next) => {
  * 修改学生信息
  */
 router.post('/updateStu', async (req, res, next) => {
-  console.log(req.body.params.stu);
-  const stu = req.body.params.stu
+  const stu = req.body.stu
   var result = await Student.update({
     stuName: stu.stuName,
     xueYuan: stu.xueYuan,
