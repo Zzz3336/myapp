@@ -17,6 +17,7 @@
   </div>
 </template>
 <script>
+import { get, post } from "../network/request";
 export default {
   data() {
     return {
@@ -28,32 +29,30 @@ export default {
   },
   methods: {
     async onSubmit() {
-      await this.$axios
-        .post("http://localhost:3000/users/login", {
-          username: this.form.username,
-          pwd: this.form.pwd
-        })
-        .then(
-          res => {
-            const result = res.data;
-            if (result.status == 404) {
-              this.$message.error("登录失败，请重新登录");
-              this.form.username = "";
-              this.form.pwd = "";
-            } else if (result.status == 200) {
-              this.$message({
-                message: "登录成功，正在跳转",
-                type: "success"
-              });
-              setTimeout(() => {
-                this.$router.push("/main");
-              }, 1000);
-            }
-          },
-          err => {
-            console.log(err);
+      await post("/users/login", {
+        username: this.form.username,
+        pwd: this.form.pwd
+      }).then(
+        res => {
+          const result = res.data;
+          if (result.status == 404) {
+            this.$message.error("登录失败，请重新登录");
+            this.form.username = "";
+            this.form.pwd = "";
+          } else if (result.status == 200) {
+            this.$message({
+              message: "登录成功，正在跳转",
+              type: "success"
+            });
+            setTimeout(() => {
+              this.$router.push("/main");
+            }, 1000);
           }
-        );
+        },
+        err => {
+          console.log(err);
+        }
+      );
     },
     reset() {
       this.form.username = "";
