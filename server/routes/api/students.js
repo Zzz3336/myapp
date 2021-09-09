@@ -28,16 +28,219 @@ router.post('/getStudata', async (req, res, next) => {
 /**
  * 根据stuId查询数据
  */
-router.get('/getStubystuId', async (req, res, next) => {
-  const stuId = req.query.stuId;
-  var result = await Student.findOne({
+router.post('/selectByid', async (req, res, next) => {
+  const stuId = req.body.stuId;
+  var result = await Student.findAndCountAll({
     where: {
       stuId: stuId
     }
   })
-  res.json({
-    result
+  console.log(result);
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      total: result.count,
+      status: 200,
+      students: result.rows
+    })
+  }
+})
+
+/**
+ * 根据stuName查询数据
+ */
+router.post('/selectByname', async (req, res, next) => {
+  const stuName = req.body.stuName;
+  const currentPage = parseInt(req.body.currentPage) || 1;
+  const pageSize = parseInt(req.body.pageSize) || 2;
+  var result = await Student.findAndCountAll({
+    where: {
+      stuName: stuName
+    },
+    order: [
+      ['id', 'desc']
+    ],
+    offset: (currentPage - 1) * pageSize,
+    limit: pageSize
   })
+  console.log(result);
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      status: 200,
+      students: result.rows,
+      pagination: {
+        currentPage: currentPage,
+        pageSize: pageSize,
+        total: result.count
+      }
+    })
+  }
+})
+
+/**
+ * 根据stuId && stuName查询数据
+ */
+router.post('/selectByidandname', async (req, res, next) => {
+  const stuName = req.body.stuName;
+  const stuId = req.body.stuId
+  var result = await Student.findAndCountAll({
+    where: {
+      stuName: stuName,
+      stuId: stuId
+    }
+  })
+  console.log(result);
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      total: result.count,
+      status: 200,
+      students: result.rows
+    })
+  }
+})
+
+/**
+ * 根据banJi(班级)查询数据
+ */
+router.post('/selectBybanji', async (req, res, next) => {
+  const banJi = req.body.banJi;
+  const currentPage = parseInt(req.body.currentPage) || 1;
+  const pageSize = parseInt(req.body.pageSize) || 2;
+  var result = await Student.findAndCountAll({
+    where: {
+      banJi: banJi
+    },
+    order: [
+      ['id', 'desc']
+    ],
+    offset: (currentPage - 1) * pageSize,
+    limit: pageSize,
+  })
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      status: 200,
+      students: result.rows,
+      pagination: {
+        currentPage: currentPage,
+        pageSize: pageSize,
+        total: result.count
+      }
+    })
+  }
+
+})
+
+/**
+ * 根据banJi(班级)和stuId查询数据
+ */
+router.post('/selectBybanjiandid', async (req, res, next) => {
+  const banJi = req.body.banJi;
+  const stuId = req.body.stuId;
+
+  var result = await Student.findAndCountAll({
+    where: {
+      banJi: banJi,
+      stuId: stuId
+    }
+  })
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      total: result.count,
+      status: 200,
+      students: result.rows
+    })
+  }
+
+})
+
+/**
+ * 根据banJi(班级)和stuName查询数据
+ */
+router.post('/selectBybanjiandname', async (req, res, next) => {
+  const banJi = req.body.banJi;
+  const stuName = req.body.stuName;
+  const currentPage = parseInt(req.body.currentPage) || 1;
+  const pageSize = parseInt(req.body.pageSize) || 2;
+  var result = await Student.findAndCountAll({
+    where: {
+      banJi: banJi,
+      stuName: stuName
+    },
+    order: [
+      ['id', 'desc']
+    ],
+    offset: (currentPage - 1) * pageSize,
+    limit: pageSize
+  })
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      status: 200,
+      students: result.rows,
+      pagination: {
+        currentPage: currentPage,
+        pageSize: pageSize,
+        total: result.count
+      }
+    })
+  }
+})
+
+/**
+ * 根据banJi(班级)&&stuName&&stuId查询数据
+ */
+router.post('/selectByall', async (req, res, next) => {
+  const banJi = req.body.banJi;
+  const stuName = req.body.stuName;
+  const stuId = req.body.stuId;
+
+  var result = await Student.findAndCountAll({
+    where: {
+      banJi: banJi,
+      stuName: stuName,
+      stuId: stuId
+    }
+  })
+  if (result.count == 0) {
+    res.send({
+      total: result.count,
+      status: 404
+    })
+  } else if (result.count !== 0) {
+    res.send({
+      total: result.count,
+      status: 200,
+      students: result.rows
+    })
+  }
 })
 
 /**

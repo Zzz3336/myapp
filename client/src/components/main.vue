@@ -5,10 +5,13 @@
       <div class="left">
         <span class="title">管理系统-增删查改</span>
       </div>
+      <div class="right">
+        <el-button @click="addDialogVisible = true" icon="el-icon-plus">新增</el-button>
+      </div>
     </div>
 
     <div class="table">
-      <el-tabs v-model="activeName" type="card" v-show="tableShow">
+      <el-tabs v-model="activeName" type="card">
         <el-tab-pane label="数据列表" name="first">
           <div>
             <el-table :data="stuData" border style="width: 100%" v-loading="loading">
@@ -22,13 +25,15 @@
               <el-table-column fixed="right" label="操作" align="center">
                 <template slot-scope="scope">
                   <el-button
-                    @click.native.prevent="updateStu(scope.$index, stuData)"
+                    @click.native.prevent="updateStu(scope.$index, stuData),updateDialogVisible = true"
                     type="text"
                     size="small"
+                    icon="el-icon-edit"
                   >修改</el-button>
                   <el-button
                     type="text"
                     size="small"
+                    icon="el-icon-delete"
                     @click.native.prevent="removeRow(scope.$index, stuData)"
                   >删除</el-button>
                 </template>
@@ -47,110 +52,7 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="录入学生信息" name="second">
-          <!-- 录入 -->
-          <el-form
-            :model="addForm"
-            ref="addForm"
-            label-width="100px"
-            class="addForm"
-            :rules="addRules"
-          >
-            <el-form-item label="学号" prop="stuId">
-              <el-input v-model="addForm.stuId" placeholder="请选择学生学号"></el-input>
-            </el-form-item>
-            <el-form-item label="姓名" prop="stuName">
-              <el-input v-model="addForm.stuName" placeholder="请选择学生姓名"></el-input>
-            </el-form-item>
-            <el-form-item label="学院">
-              <el-select v-model="addForm.xueYuan" placeholder="请选择学院">
-                <el-option label="大数据" value="大数据"></el-option>
-                <el-option label="计算机" value="计算机"></el-option>
-                <el-option label="管理" value="管理"></el-option>
-                <el-option label="艺术" value="艺术"></el-option>
-                <el-option label="财经" value="财经"></el-option>
-                <el-option label="外语" value="外语"></el-option>
-                <el-option label="建筑" value="建筑"></el-option>
-                <el-option label="电气" value="电气"></el-option>
-                <el-option label="体育" value="体育"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="班级">
-              <el-select v-model="addForm.banJi" placeholder="请选择班级">
-                <el-option label="软件工程" value="软件工程"></el-option>
-                <el-option label="大数据" value="大数据"></el-option>
-                <el-option label="工商管理" value="工商管理"></el-option>
-                <el-option label="市场营销" value="市场营销"></el-option>
-                <el-option label="视觉传达" value="视觉传达"></el-option>
-                <el-option label="新媒体" value="新媒体"></el-option>
-                <el-option label="经济学" value="经济学"></el-option>
-                <el-option label="英语" value="英语"></el-option>
-                <el-option label="德语" value="德语"></el-option>
-                <el-option label="法语" value="法语"></el-option>
-                <el-option label="俄语" value="俄语"></el-option>
-                <el-option label="建筑设计" value="建筑设计"></el-option>
-                <el-option label="风景园林" value="风景园林"></el-option>
-                <el-option label="电力系统及其自动化" value="电力系统及其自动化"></el-option>
-                <el-option label="电工理论与新技术" value="电工理论与新技术"></el-option>
-                <el-option label="体育教育" value="体育教育"></el-option>
-                <el-option label="运动康复" value="运动康复"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="入学时间" prop="timeIn">
-              <el-col>
-                <el-date-picker
-                  placeholder="选择日期"
-                  v-model="addForm.timeIn"
-                  style="width: 100%;"
-                  value-format="yyyy-MM-dd"
-                ></el-date-picker>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="addForm.email" placeholder="请选择邮箱"></el-input>
-            </el-form-item>
-            <el-form-item label="联系方式" prop="telphone">
-              <el-input v-model="addForm.telphone" placeholder="请选择联系方式"></el-input>
-            </el-form-item>
-            <el-form-item class="form-button">
-              <el-button type="primary" @click="submitaddForm('addForm')">保存</el-button>
-              <el-button @click="resetaddForm('addForm')">重置</el-button>
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
-
-        <el-tab-pane label="查询" name="third">
-          <div class="right">
-            <el-input placeholder="请输入学号" v-model="selectBystuid"></el-input>
-            <el-button type="primary" icon="el-icon-search" @click="selectStu">查询</el-button>
-          </div>
-          <!-- 查询列表 -->
-          <el-table :data="selectData" border style="width: 100%">
-            <el-table-column fixed prop="stuId" label="学号" align="center"></el-table-column>
-            <el-table-column prop="stuName" label="姓名" align="center"></el-table-column>
-            <el-table-column prop="banJi" label="班级" align="center"></el-table-column>
-            <el-table-column prop="xueYuan" label="学院" align="center"></el-table-column>
-            <el-table-column prop="telphone" label="联系方式" align="center"></el-table-column>
-            <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
-            <el-table-column prop="timeIn" label="入学时间" align="center"></el-table-column>
-            <el-table-column fixed="right" label="操作" align="center">
-              <template slot-scope="scope">
-                <el-button
-                  @click.native.prevent="updateStu(scope.$index, selectData)"
-                  type="text"
-                  size="small"
-                >修改</el-button>
-                <el-button
-                  type="text"
-                  size="small"
-                  @click.native.prevent="removeRow(scope.$index, selectData)"
-                >删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-
-        <el-tab-pane label="统计" name="fourth">
+        <el-tab-pane label="统计" name="second">
           <div class="statistics">
             <div class="selectSta">
               <el-select v-model="value" placeholder="请选择方式" size="small" @change="selSta">
@@ -161,71 +63,126 @@
                   :value="item.value"
                 ></el-option>
               </el-select>
-              <div id="tongji" ref="myChartsDom" style="height:80vh,width:500px"></div>
+              <div id="tongji" ref="myChartsDom"></div>
+              <div id="tongji2" ref="myChartsDom2"></div>
             </div>
           </div>
         </el-tab-pane>
       </el-tabs>
     </div>
 
-    <!-- 修改 -->
-    <el-form
-      :model="updateForm"
-      ref="updateForm"
-      label-width="80px"
-      :rules="addRules"
-      class="updateForm"
-      v-show="updateShow"
-    >
-      <el-form-item label="姓名" prop="stuName">
-        <el-input v-model="updateForm.stuName"></el-input>
-      </el-form-item>
-      <el-form-item label="学院">
-        <el-select v-model="updateForm.xueYuan" placeholder="请选择学院">
-          <el-option label="大数据" value="大数据"></el-option>
-          <el-option label="计算机" value="计算机"></el-option>
-          <el-option label="管理" value="管理"></el-option>
-          <el-option label="艺术" value="艺术"></el-option>
-          <el-option label="财经" value="财经"></el-option>
-          <el-option label="外语" value="外语"></el-option>
-          <el-option label="建筑" value="建筑"></el-option>
-          <el-option label="电气" value="电气"></el-option>
-          <el-option label="体育" value="体育"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="班级">
-        <el-select v-model="updateForm.banJi" placeholder="请选择班级">
-          <el-option label="软件工程" value="软件工程"></el-option>
-          <el-option label="大数据" value="大数据"></el-option>
-          <el-option label="工商管理" value="工商管理"></el-option>
-          <el-option label="市场营销" value="市场营销"></el-option>
-          <el-option label="视觉传达" value="视觉传达"></el-option>
-          <el-option label="新媒体" value="新媒体"></el-option>
-          <el-option label="经济学" value="经济学"></el-option>
-          <el-option label="英语" value="英语"></el-option>
-          <el-option label="德语" value="德语"></el-option>
-          <el-option label="法语" value="法语"></el-option>
-          <el-option label="俄语" value="俄语"></el-option>
-          <el-option label="建筑设计" value="建筑设计"></el-option>
-          <el-option label="风景园林" value="风景园林"></el-option>
-          <el-option label="电力系统及其自动化" value="电力系统及其自动化"></el-option>
-          <el-option label="电工理论与新技术" value="电工理论与新技术"></el-option>
-          <el-option label="体育教育" value="体育教育"></el-option>
-          <el-option label="运动康复" value="运动康复"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="updateForm.email"></el-input>
-      </el-form-item>
-      <el-form-item label="联系方式" prop="telphone">
-        <el-input v-model="updateForm.telphone"></el-input>
-      </el-form-item>
-      <el-form-item class="form-button">
-        <el-button @click="returnTable">返回</el-button>
-        <el-button @click="resetaddForm('updateForm')">重置</el-button>
-        <el-button type="primary" @click="submitupdateForm('updateForm')" width="100px">修改</el-button>
-      </el-form-item>
-    </el-form>
+    <!--新增 - 弹出框-->
+    <el-dialog title="新增学生信息" :visible.sync="addDialogVisible" width="40%" center>
+      <el-form :model="addForm" ref="addForm" label-width="80px" class="addForm" :rules="addRules">
+        <el-form-item label="学号" prop="stuId">
+          <el-input v-model="addForm.stuId" placeholder="请选择学生学号"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" prop="stuName">
+          <el-input v-model="addForm.stuName" placeholder="请选择学生姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="学院" prop="xueYuan">
+          <el-select v-model="addForm.xueYuan" placeholder="请选择学院">
+            <el-option
+              v-for="item in xueYuanoptions"
+              :key="item.xueYuan"
+              :label="item.label"
+              :value="item.xueYuan"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="班级" prop="banJi">
+          <el-select v-model="addForm.banJi" placeholder="请选择班级">
+            <el-option
+              v-for="item in banJioptions"
+              :key="item.banJi"
+              :label="item.label"
+              :value="item.banJi"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入学时间" prop="timeIn">
+          <el-col>
+            <el-date-picker
+              placeholder="选择日期"
+              v-model="addForm.timeIn"
+              style="width: 100%;"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addForm.email" placeholder="请选择邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="telphone">
+          <el-input v-model="addForm.telphone" placeholder="请选择联系方式"></el-input>
+        </el-form-item>
+        <el-form-item class="form-button">
+          <el-button type="primary" @click="submitaddForm('addForm')" class="button">保存</el-button>
+          <el-button @click="resetaddForm('addForm')" class="button">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!--修改 - 弹出框-->
+    <el-dialog title="修改学生信息" :visible.sync="updateDialogVisible" width="40%" center>
+      <el-form
+        :model="updateForm"
+        ref="updateForm"
+        label-width="80px"
+        :rules="addRules"
+        class="updateForm"
+      >
+        <el-form-item label="姓名" prop="stuName">
+          <el-input v-model="updateForm.stuName"></el-input>
+        </el-form-item>
+        <el-form-item label="学院" prop="xueYuan">
+          <el-select v-model="updateForm.xueYuan" placeholder="请选择学院">
+            <el-option
+              v-for="item in xueYuanoptions1"
+              :key="item.xueYuan1"
+              :label="item.label"
+              :value="item.xueYuan1"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="班级" prop="banJi">
+          <el-select v-model="updateForm.banJi" placeholder="请选择班级">
+            <el-option
+              v-for="item in banJioptions1"
+              :key="item.banJi1"
+              :label="item.label"
+              :value="item.banJi1"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="updateForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="telphone">
+          <el-input v-model="updateForm.telphone"></el-input>
+        </el-form-item>
+        <el-form-item class="form-button">
+          <el-button type="primary" @click="submitupdateForm('updateForm')">修改</el-button>
+          <el-button @click="resetupdateForm">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!-- 查询条件 -->
+    <div class="select w">
+      学号:
+      <el-input v-model="selectWay.selByid" size="small" placeholder="查询学号" label="学号"></el-input>姓名:
+      <el-input v-model="selectWay.selByname" size="small" placeholder="查询姓名"></el-input>班级:
+      <el-select v-model="value1" placeholder="查询班级" size="small">
+        <el-option
+          v-for="item in options1"
+          :key="item.value1"
+          :label="item.label"
+          :value="item.value1"
+        ></el-option>
+      </el-select>
+      <el-button size="small" type="primary" @click="select">查询</el-button>
+    </div>
   </div>
 </template>
 <script>
@@ -263,11 +220,319 @@ export default {
       }, 100);
     }
     return {
-      //默认Tabs
-      activeName: "first",
+      //查询 - 查询条件
+      selectWay: {
+        selByid: "",
+        selByname: "",
+        selByclass: ""
+      },
 
-      // 查询 - input输入框
-      selectBystuid: "",
+      //下拉菜单 - 选择器select
+      // 查询 - 班级,value1默认项
+      options1: [
+        {
+          value1: "全部",
+          label: "全部"
+        },
+        {
+          value1: "软件工程",
+          label: "软件工程"
+        },
+        {
+          value1: "大数据",
+          label: "大数据"
+        },
+        {
+          value1: "工商管理",
+          label: "工商管理"
+        },
+        {
+          value1: "市场营销",
+          label: "市场营销"
+        },
+        {
+          value1: "视觉传达",
+          label: "视觉传达"
+        },
+        {
+          value1: "新媒体",
+          label: "新媒体"
+        },
+        {
+          value1: "经济学",
+          label: "经济学"
+        },
+        {
+          value1: "英语",
+          label: "英语"
+        },
+        {
+          value1: "德语",
+          label: "德语"
+        },
+        {
+          value1: "法语",
+          label: "法语"
+        },
+        {
+          value1: "俄语",
+          label: "俄语"
+        },
+        {
+          value1: "建筑设计",
+          label: "建筑设计"
+        },
+        {
+          value1: "风景园林",
+          label: "风景园林"
+        },
+        {
+          value1: "电力系统及其自动化",
+          label: "电力系统及其自动化"
+        },
+        {
+          value1: "电工理论与新技术",
+          label: "电工理论与新技术"
+        },
+        {
+          value1: "体育教育",
+          label: "体育教育"
+        },
+        {
+          value1: "运动康复",
+          label: "运动康复"
+        }
+      ],
+      value1: "全部",
+      // 新增表单 - 学院, xueYuanvalue默认项
+      xueYuanoptions: [
+        {
+          xueYuan: "大数据",
+          label: "大数据"
+        },
+        {
+          xueYuan: "计算机",
+          label: "计算机"
+        },
+        {
+          xueYuan: "管理",
+          label: "管理"
+        },
+        {
+          xueYuan: "艺术",
+          label: "艺术"
+        },
+        {
+          xueYuan: "财经",
+          label: "财经"
+        },
+        {
+          xueYuan: "外语",
+          label: "外语"
+        },
+        {
+          xueYuan: "建筑",
+          label: "建筑"
+        },
+        {
+          xueYuan: "电气",
+          label: "电气"
+        },
+        {
+          xueYuan: "体育",
+          label: "体育"
+        }
+      ],
+      xueYuan: "",
+      //新增表单 - 班级, banJivalue默认项
+      banJioptions: [
+        {
+          banJi: "软件工程",
+          label: "软件工程"
+        },
+        {
+          banJi: "大数据",
+          label: "大数据"
+        },
+        {
+          banJi: "工商管理",
+          label: "工商管理"
+        },
+        {
+          banJi: "市场营销",
+          label: "市场营销"
+        },
+        {
+          banJi: "视觉传达",
+          label: "视觉传达"
+        },
+        {
+          banJi: "新媒体",
+          label: "新媒体"
+        },
+        {
+          banJi: "经济学",
+          label: "经济学"
+        },
+        {
+          banJi: "英语",
+          label: "英语"
+        },
+        {
+          banJi: "德语",
+          label: "德语"
+        },
+        {
+          banJi: "法语",
+          label: "法语"
+        },
+        {
+          banJi: "俄语",
+          label: "俄语"
+        },
+        {
+          banJi: "建筑设计",
+          label: "建筑设计"
+        },
+        {
+          banJi: "风景园林",
+          label: "风景园林"
+        },
+        {
+          banJi: "电力系统及其自动化",
+          label: "电力系统及其自动化"
+        },
+        {
+          banJi: "电工理论与新技术",
+          label: "电工理论与新技术"
+        },
+        {
+          banJi: "体育教育",
+          label: "体育教育"
+        },
+        {
+          banJi: "运动康复",
+          label: "运动康复"
+        }
+      ],
+      banJi: "",
+      //修改表单 - 学院
+      xueYuanoptions1: [
+        {
+          xueYuan1: "大数据",
+          label: "大数据"
+        },
+        {
+          xueYuan1: "计算机",
+          label: "计算机"
+        },
+        {
+          xueYuan1: "管理",
+          label: "管理"
+        },
+        {
+          xueYuan1: "艺术",
+          label: "艺术"
+        },
+        {
+          xueYuan1: "财经",
+          label: "财经"
+        },
+        {
+          xueYuan1: "外语",
+          label: "外语"
+        },
+        {
+          xueYuan1: "建筑",
+          label: "建筑"
+        },
+        {
+          xueYuan1: "电气",
+          label: "电气"
+        },
+        {
+          xueYuan1: "体育",
+          label: "体育"
+        }
+      ],
+      //修改表单 - 班级
+      banJioptions1: [
+        {
+          banJi1: "软件工程",
+          label: "软件工程"
+        },
+        {
+          banJi1: "大数据",
+          label: "大数据"
+        },
+        {
+          banJi1: "工商管理",
+          label: "工商管理"
+        },
+        {
+          banJi1: "市场营销",
+          label: "市场营销"
+        },
+        {
+          banJi1: "视觉传达",
+          label: "视觉传达"
+        },
+        {
+          banJi1: "新媒体",
+          label: "新媒体"
+        },
+        {
+          banJi1: "经济学",
+          label: "经济学"
+        },
+        {
+          banJi1: "英语",
+          label: "英语"
+        },
+        {
+          banJi1: "德语",
+          label: "德语"
+        },
+        {
+          banJi1: "法语",
+          label: "法语"
+        },
+        {
+          banJi1: "俄语",
+          label: "俄语"
+        },
+        {
+          banJi1: "建筑设计",
+          label: "建筑设计"
+        },
+        {
+          banJi1: "风景园林",
+          label: "风景园林"
+        },
+        {
+          banJi1: "电力系统及其自动化",
+          label: "电力系统及其自动化"
+        },
+        {
+          banJi1: "电工理论与新技术",
+          label: "电工理论与新技术"
+        },
+        {
+          banJi1: "体育教育",
+          label: "体育教育"
+        },
+        {
+          banJi1: "运动康复",
+          label: "运动康复"
+        }
+      ],
+
+      // watch监听value1, oldval - 旧value1,  newval - 新value1,
+      haschange: false,
+
+      input: "",
+      // 默认Tabs
+      activeName: "first",
 
       // 获取到列表数据
       stuData: [],
@@ -285,6 +550,11 @@ export default {
         stuId: ""
       },
 
+      // 新增 - 弹出框
+      addDialogVisible: false,
+      // 修改 - 弹出框
+      updateDialogVisible: false,
+
       // 分页
       pageSize: 10,
       total: 0,
@@ -292,11 +562,6 @@ export default {
 
       //加载效果
       loading: false,
-
-      //v-show
-      tableShow: true,
-      tabShow: true,
-      updateShow: false,
 
       //表单校验 - rules
       addRules: {
@@ -321,8 +586,8 @@ export default {
           },
           {
             min: 2,
-            max: 3,
-            message: "长度为 2-3 个字符",
+            max: 4,
+            message: "长度为 2-4 个字符",
             trigger: "blur"
           }
         ],
@@ -331,24 +596,12 @@ export default {
             required: true,
             message: "请输入班级",
             trigger: "blur"
-          },
-          {
-            min: 2,
-            max: 8,
-            message: "长度为 2-8 个字符",
-            trigger: "blur"
           }
         ],
         xueYuan: [
           {
             required: true,
             message: "请输入学院",
-            trigger: "blur"
-          },
-          {
-            min: 2,
-            max: 8,
-            message: "长度为 2-8 个字符",
             trigger: "blur"
           }
         ],
@@ -397,8 +650,16 @@ export default {
       value: ""
     };
   },
+  watch: {
+    value1(oldval, newval) {
+      if (oldval !== newval) {
+        this.haschange = true;
+      }
+    }
+  },
+
   mounted() {
-    this.loadTable();
+    this.select();
     this.selSta();
   },
   methods: {
@@ -412,25 +673,8 @@ export default {
       this.updateForm.xueYuan = rows[index].xueYuan;
       this.updateForm.email = rows[index].email;
       this.updateForm.telphone = rows[index].telphone;
-      this.updateShow = true;
-      this.tableShow = false;
-      this.selectShow = false;
     },
 
-    /**
-     * 获取数据
-     */
-    async loadTable() {
-      this.loading = true;
-      await post("/students/getStudata", {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize
-      }).then(res => {
-        this.loading = false;
-        this.stuData = res.data.students;
-        this.total = res.data.pagination.total;
-      });
-    },
     /**
      * 分页
      */
@@ -438,13 +682,13 @@ export default {
     handleSizeChange(size) {
       this.pageSize = size;
       // console.log(this.pageSize);
-      this.loadTable();
+      this.select();
     },
     //当改变当前页数的时候触发的事件
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
       // console.log(this.currentPage); //点击第几页
-      this.loadTable();
+      this.select();
     },
 
     /**
@@ -462,11 +706,11 @@ export default {
             params: { stuId: rows[index].stuId }
           }).then(
             res => {
-              that.tableShow = true;
-              that.paginationShow = true;
-              that.selectShow = false;
+              that.value1 = "全部";
+              that.selectWay.selByname = "";
+              that.selectWay.selByid = "";
               that.selectData = [];
-              that.loadTable();
+              that.select();
               that.selSta();
             },
             err => {
@@ -504,11 +748,10 @@ export default {
               }).then(
                 res => {
                   if (res.data.status == 200) {
-                    this.tableShow = true;
-                    this.updateShow = false;
                     this.selectData = [];
-                    that.loadTable();
+                    that.select();
                     that.selSta();
+                    that.updateDialogVisible = false;
                   } else if (res.data.status == 404) {
                     this.$message.error("已存在信息，手机号、邮箱已被使用");
                   }
@@ -527,40 +770,194 @@ export default {
     },
 
     /**
-     * ‘返回’数据列表
-     */
-    returnTable() {
-      this.tableShow = true;
-      this.updateShow = false;
-      this.selectShow = false;
-    },
-
-    /**
      * 查询数据
      */
-    async selectStu() {
-      if (this.selectBystuid == "") {
-        this.$message({
-          message: "请输入学号",
-          type: "warning"
-        });
-      } else {
-        this.selectData = [];
-        await get("/students/getStubystuId", {
-          params: {
-            stuId: this.selectBystuid
-          }
-        }).then(
-          res => {
-            if (res.data.result !== null) {
-              this.selectData.unshift(res.data.result);
+    async select() {
+      this.loading = true;
+      this.selectWay.selByclass = this.value1;
+      var that = this;
+      if (this.selectWay.selByclass == "全部") {
+        // 1.班级 - 全部,    id - 有,     姓名 - 无
+        if (this.selectWay.selByid !== "" && this.selectWay.selByname == "") {
+          await post("/students/selectByid", {
+            stuId: that.selectWay.selByid
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                that.stuData = [];
+                that.stuData = res.data.students;
+                that.total = res.data.total;
+              }
+            },
+            err => {
+              console.log(err);
             }
-            this.selectBystuid = "";
-          },
-          err => {
-            console.log(err);
-          }
-        );
+          );
+        } else if (
+          // 2.班级 - 全部,    id - 无,     姓名 - 有
+          this.selectWay.selByid == "" &&
+          this.selectWay.selByname !== ""
+        ) {
+          await post("/students/selectByname", {
+            stuName: that.selectWay.selByname,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                this.loading = false;
+                this.stuData = res.data.students;
+                this.total = res.data.pagination.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        } else if (
+          // 3.班级 - 全部,    id - 有,     姓名 - 有
+          this.selectWay.selByid !== "" &&
+          this.selectWay.selByname !== ""
+        ) {
+          await post("/students/selectByidandname", {
+            stuName: that.selectWay.selByname,
+            stuId: that.selectWay.selByid
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                that.stuData = [];
+                that.stuData = res.data.students;
+                that.total = res.data.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        } else if (
+          // 4.班级 - 全部,    id - 无,     姓名 - 无,
+          this.selectWay.selByid == "" &&
+          this.selectWay.selByname == ""
+        ) {
+          await post("/students/getStudata", {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
+          }).then(res => {
+            this.loading = false;
+            this.stuData = res.data.students;
+            this.total = res.data.pagination.total;
+          });
+        }
+      } else if (this.selectWay.selByclass !== "全部") {
+        if (this.haschange) {
+          this.haschange = false;
+          this.currentPage = 1;
+        }
+        // 5.班级 - 有,    id - 无,    姓名 - 无
+        if (this.selectWay.selByid == "" && this.selectWay.selByname == "") {
+          await post("/students/selectBybanji", {
+            banJi: this.selectWay.selByclass,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                this.stuData = [];
+                this.total = 0;
+              } else if (res.data.status === 200) {
+                this.stuData = res.data.students;
+                this.total = res.data.pagination.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        } else if (
+          this.selectWay.selByid !== "" &&
+          this.selectWay.selByname == ""
+        ) {
+          // 6.班级 - 有,      id - 有,      姓名 - 无
+          await post("/students/selectBybanjiandid", {
+            banJi: that.selectWay.selByclass,
+            stuId: that.selectWay.selByid
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                that.stuData = [];
+                that.stuData = res.data.students;
+                that.total = res.data.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        } else if (
+          // 7.班级 - 有,      id - 无,      姓名 - 有
+          this.selectWay.selByid == "" &&
+          this.selectWay.selByname !== ""
+        ) {
+          await post("/students/selectBybanjiandname", {
+            banJi: that.selectWay.selByclass,
+            stuName: that.selectWay.selByname,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                this.stuData = res.data.students;
+                this.total = res.data.pagination.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        } else {
+          // 8.班级 - 有,      id - 有,      姓名 - 有
+          await post("/students/selectByall", {
+            banJi: that.selectWay.selByclass,
+            stuName: that.selectWay.selByname,
+            stuId: that.selectWay.selByid
+          }).then(
+            res => {
+              that.loading = false;
+              if (res.data.status === 404) {
+                that.stuData = [];
+                that.total = 0;
+              } else if (res.data.status === 200) {
+                that.stuData = [];
+                that.stuData = res.data.students;
+                that.total = res.data.total;
+              }
+            },
+            err => {
+              console.log(err);
+            }
+          );
+        }
       }
     },
 
@@ -576,6 +973,7 @@ export default {
             type: "warning"
           }).then(
             () => {
+              this.addDialogVisible = false;
               var that = this;
               post("/students/addNewstu", {
                 stu: that.addForm
@@ -586,7 +984,7 @@ export default {
                     message: "信息录入成功",
                     type: "success"
                   });
-                  that.loadTable();
+                  that.select();
                   that.addForm = {};
                   that.selSta();
                 } else if (res.data.status == 404) {
@@ -605,10 +1003,24 @@ export default {
     },
 
     /**
-     * 重置(录入表单 修改表单)
+     * 新增 - 表单重置
      */
     resetaddForm(formName) {
       this.$refs[formName].resetFields();
+    },
+
+    /**
+     * 修改 - 表单重置
+     */
+    resetupdateForm() {
+      this.updateForm = {
+        stuName: "",
+        banJi: "",
+        xueYuan: "",
+        email: "",
+        telphone: "",
+        stuId: ""
+      };
     },
 
     /**
@@ -620,6 +1032,7 @@ export default {
           params: { howtosel: this.value }
         }).then(
           res => {
+            // Echarts
             var ecaharts = require("echarts");
             var myChart = ecaharts.init(document.getElementById("tongji"));
 
@@ -670,6 +1083,57 @@ export default {
                 }
               ]
             });
+
+            // Highcharts
+            let Highcharts = require("highcharts");
+            let options = {
+              chart: {
+                type: "column"
+              },
+              title: {
+                text: "各学院人数" // 标题
+              },
+              xAxis: {
+                categories: [
+                  "大数据",
+                  "计算机",
+                  "管理",
+                  "艺术",
+                  "财经",
+                  "外语",
+                  "建筑",
+                  "电气",
+                  "体育"
+                ], // x 轴分类
+                crosshair: true
+              },
+              yAxis: {
+                title: {
+                  text: "人数" // y 轴标题
+                }
+              },
+              series: [
+                {
+                  // 数据列
+                  name: "学院", // 数据列名
+                  data: [
+                    res.data.dsg.length,
+                    res.data.jsj.length,
+                    res.data.gl.length,
+                    res.data.ys.length,
+                    res.data.cj.length,
+                    res.data.wy.length,
+                    res.data.jz.length,
+                    res.data.dq.length,
+                    res.data.ty.length
+                  ] // 数据
+                }
+              ],
+              credits: {
+                enabled: false // 禁用版权信息
+              }
+            };
+            Highcharts.chart("tongji2", options);
           },
           err => {}
         );
@@ -678,6 +1142,7 @@ export default {
           params: { howtosel: this.value }
         }).then(
           res => {
+            // Echarts
             var ecaharts = require("echarts");
             var myChart = ecaharts.init(document.getElementById("tongji"));
             myChart.setOption({
@@ -738,6 +1203,73 @@ export default {
                 }
               ]
             });
+
+            // Highcharts
+            let Highcharts = require("highcharts");
+            let options = {
+              chart: {
+                type: "column"
+              },
+              title: {
+                text: "各班级人数" // 标题
+              },
+              xAxis: {
+                categories: [
+                  "软件工程",
+                  "大数据",
+                  "工商管理",
+                  "市场营销",
+                  "视觉传达",
+                  "新媒体",
+                  "经济学",
+                  "英语",
+                  "德语",
+                  "法语",
+                  "俄语",
+                  "建筑设计",
+                  "风景园林",
+                  "电力系统及其自动化",
+                  "电工理论与新技术",
+                  "体育教育",
+                  "运动康复"
+                ], // x 轴分类
+                crosshair: true
+              },
+              yAxis: {
+                title: {
+                  text: "人数" // y 轴标题
+                }
+              },
+              series: [
+                {
+                  // 数据列
+                  name: "学院", // 数据列名
+                  data: [
+                    res.data.rjgc.length,
+                    res.data.dsj.length,
+                    res.data.gsgl.length,
+                    res.data.scyx.length,
+                    res.data.sjcd.length,
+                    res.data.xmt.length,
+                    res.data.jjx.length,
+                    res.data.yy.length,
+                    res.data.dy.length,
+                    res.data.fy.length,
+                    res.data.ey.length,
+                    res.data.jzsj.length,
+                    res.data.fjyl.length,
+                    res.data.zdh.length,
+                    res.data.xjs.length,
+                    res.data.tyjy.length,
+                    res.data.ydkf.length
+                  ] // 数据
+                }
+              ],
+              credits: {
+                enabled: false // 禁用版权信息
+              }
+            };
+            Highcharts.chart("tongji2", options);
           },
           err => {}
         );
