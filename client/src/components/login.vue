@@ -40,6 +40,7 @@ export default {
             this.form.username = "";
             this.form.pwd = "";
           } else if (result.status == 200) {
+            sessionStorage.setItem("token", "true");
             this.$message({
               message: "登录成功，正在跳转",
               type: "success"

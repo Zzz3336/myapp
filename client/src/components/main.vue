@@ -189,6 +189,7 @@
 import { get, post } from "../network/request";
 export default {
   data() {
+    // 验证条件 - 手机,邮箱
     function checkPhone(rule, value, callback) {
       const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/;
       if (!value) {
@@ -657,7 +658,9 @@ export default {
       }
     }
   },
-
+  created() {
+    console.log(sessionStorage);
+  },
   mounted() {
     this.select();
     this.selSta();
@@ -804,8 +807,8 @@ export default {
         ) {
           await post("/students/selectByname", {
             stuName: that.selectWay.selByname,
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
+            currentPage: that.currentPage,
+            pageSize: that.pageSize
           }).then(
             res => {
               that.loading = false;
@@ -813,9 +816,9 @@ export default {
                 that.stuData = [];
                 that.total = 0;
               } else if (res.data.status === 200) {
-                this.loading = false;
-                this.stuData = res.data.students;
-                this.total = res.data.pagination.total;
+                that.loading = false;
+                that.stuData = res.data.students;
+                that.total = res.data.pagination.total;
               }
             },
             err => {
@@ -852,15 +855,16 @@ export default {
           this.selectWay.selByname == ""
         ) {
           await post("/students/getStudata", {
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
+            currentPage: that.currentPage,
+            pageSize: that.pageSize
           }).then(res => {
-            this.loading = false;
-            this.stuData = res.data.students;
-            this.total = res.data.pagination.total;
+            that.loading = false;
+            that.stuData = res.data.students;
+            that.total = res.data.pagination.total;
           });
         }
       } else if (this.selectWay.selByclass !== "全部") {
+        // 监听器 - 判断是否修改 ‘当前页数’ 的值
         if (this.haschange) {
           this.haschange = false;
           this.currentPage = 1;
@@ -868,18 +872,18 @@ export default {
         // 5.班级 - 有,    id - 无,    姓名 - 无
         if (this.selectWay.selByid == "" && this.selectWay.selByname == "") {
           await post("/students/selectBybanji", {
-            banJi: this.selectWay.selByclass,
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
+            banJi: that.selectWay.selByclass,
+            currentPage: that.currentPage,
+            pageSize: that.pageSize
           }).then(
             res => {
               that.loading = false;
               if (res.data.status === 404) {
-                this.stuData = [];
-                this.total = 0;
+                that.stuData = [];
+                that.total = 0;
               } else if (res.data.status === 200) {
-                this.stuData = res.data.students;
-                this.total = res.data.pagination.total;
+                that.stuData = res.data.students;
+                that.total = res.data.pagination.total;
               }
             },
             err => {
@@ -918,8 +922,8 @@ export default {
           await post("/students/selectBybanjiandname", {
             banJi: that.selectWay.selByclass,
             stuName: that.selectWay.selByname,
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
+            currentPage: that.currentPage,
+            pageSize: that.pageSize
           }).then(
             res => {
               that.loading = false;
@@ -927,8 +931,8 @@ export default {
                 that.stuData = [];
                 that.total = 0;
               } else if (res.data.status === 200) {
-                this.stuData = res.data.students;
-                this.total = res.data.pagination.total;
+                that.stuData = res.data.students;
+                that.total = res.data.pagination.total;
               }
             },
             err => {
