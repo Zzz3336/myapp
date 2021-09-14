@@ -6,7 +6,6 @@ var Student = require('../../models/Student')
  * 根据学院查询人数
  */
 router.get('/selSta', async function (req, res, next) {
-  console.log(req.query)
   if (req.query.howtosel == "学院") {
     var dsgtotal = await Student.findAll({
       where: {

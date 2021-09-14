@@ -4,6 +4,7 @@ body {
   height: 100vh;
 }
 
+
 /*通用*/
 .w {
   width: 80%;
@@ -24,7 +25,7 @@ body {
   width: 400px;
   height: 250px;
   position: absolute;
-  left: 35%;
+  left: 38%;
   top: 50%;
   transform: translateY(-50%);
   border-radius: 5%;
@@ -50,7 +51,10 @@ body {
 
 .main>.header>.left {
   float: left;
+  user-select: none;
 }
+
+
 
 .main>.header>.left>.title {
   font-size: 30px;
@@ -67,6 +71,12 @@ body {
   right: 10%;
 }
 
+.newUser {
+  float: left;
+  margin-right: 30px;
+  margin-top: 10px;
+}
+
 /* table */
 .table {
   position: absolute;
@@ -81,6 +91,8 @@ body {
   padding-bottom: 20px;
 }
 
+
+
 /* 弹出框 */
 .el-dialog {
   border-radius: 20px;
@@ -90,7 +102,7 @@ body {
 
 .select {
   position: absolute;
-  right: 130px;
+  right: 9%;
   width: 600px;
   top: 12vh;
   font-size: 14px;

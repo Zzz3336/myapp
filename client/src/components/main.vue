@@ -6,12 +6,14 @@
         <span class="title">管理系统-增删查改</span>
       </div>
       <div class="right">
-        <el-button @click="addDialogVisible = true" icon="el-icon-plus">新增</el-button>
+        <span class="newUser">当前用户：{{this.newUser}}</span>
+        <el-button @click="addDialogVisible = true" type="primary" icon="el-icon-plus">新增</el-button>
+        <el-button @click="exit" icon="el-icon-close">退出</el-button>
       </div>
     </div>
 
     <div class="table">
-      <el-tabs v-model="activeName" type="card">
+      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="数据列表" name="first">
           <div>
             <el-table :data="stuData" border style="width: 100%" v-loading="loading">
@@ -19,7 +21,7 @@
               <el-table-column prop="stuName" label="姓名" align="center"></el-table-column>
               <el-table-column prop="banJi" label="班级" align="center"></el-table-column>
               <el-table-column prop="xueYuan" label="学院" align="center"></el-table-column>
-              <el-table-column prop="telphone" label="联系方式" align="center"></el-table-column>
+              <el-table-column prop="telphone" label="联系方式" align="center" :formatter="telFormat"></el-table-column>
               <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
               <el-table-column prop="timeIn" label="入学时间" align="center"></el-table-column>
               <el-table-column fixed="right" label="操作" align="center">
@@ -169,7 +171,7 @@
     </el-dialog>
 
     <!-- 查询条件 -->
-    <div class="select w">
+    <div class="select w" v-show="selectShow">
       学号:
       <el-input v-model="selectWay.selByid" size="small" placeholder="查询学号" label="学号"></el-input>姓名:
       <el-input v-model="selectWay.selByname" size="small" placeholder="查询姓名"></el-input>班级:
@@ -181,12 +183,13 @@
           :value="item.value1"
         ></el-option>
       </el-select>
-      <el-button size="small" type="primary" @click="select">查询</el-button>
+      <el-button size="small" type="primary" @click="select" icon="el-icon-search">查询</el-button>
     </div>
   </div>
 </template>
 <script>
 import { get, post } from "../network/request";
+import axios from "axios";
 export default {
   data() {
     // 验证条件 - 手机,邮箱
@@ -221,12 +224,16 @@ export default {
       }, 100);
     }
     return {
+      //当前用户名
+      newUser: "",
+
       //查询 - 查询条件
       selectWay: {
         selByid: "",
         selByname: "",
         selByclass: ""
       },
+      selectShow: true,
 
       //下拉菜单 - 选择器select
       // 查询 - 班级,value1默认项
@@ -587,8 +594,8 @@ export default {
           },
           {
             min: 2,
-            max: 4,
-            message: "长度为 2-4 个字符",
+            max: 10,
+            message: "长度为 2-10 个字符",
             trigger: "blur"
           }
         ],
@@ -659,11 +666,35 @@ export default {
     }
   },
   created() {
-    console.log(sessionStorage);
+    // console.log(this.$store.state.token);
   },
   mounted() {
     this.select();
     this.selSta();
+    this.newUser = this.$router.history.current.query.username;
+
+    this.$axios.interceptors.request.use(
+      config => {
+        console.log("请求前做点什么");
+        console.log(config);
+        return config;
+      },
+      err => {
+        console.log("请求失败做点什么");
+        console.log(err);
+      }
+    );
+
+    post("/users/getUser", {
+      token: localStorage.getItem("token")
+    })
+      .then(res => {
+        // console.log(res.data.newUser.tokenKey);
+        this.newUser = res.data.newUser.tokenKey;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
   methods: {
     /**
@@ -676,6 +707,27 @@ export default {
       this.updateForm.xueYuan = rows[index].xueYuan;
       this.updateForm.email = rows[index].email;
       this.updateForm.telphone = rows[index].telphone;
+    },
+
+    /**
+     * 切换tabs触发
+     */
+    handleClick(tab, event) {
+      if (tab.name == "first") {
+        this.selectShow = true;
+      } else if (tab.name == "second") {
+        this.selectShow = false;
+      }
+    },
+
+    /**
+     * 手机 000-0000-0000
+     */
+    telFormat(row) {
+      let first = row.telphone.slice(0, 3);
+      let second = row.telphone.slice(3, 7);
+      let third = row.telphone.slice(7, 12);
+      return first + "-" + second + "-" + third;
     },
 
     /**
@@ -754,6 +806,11 @@ export default {
                     this.selectData = [];
                     that.select();
                     that.selSta();
+                    this.$message({
+                      showClose: true,
+                      message: "信息修改成功",
+                      type: "success"
+                    });
                     that.updateDialogVisible = false;
                   } else if (res.data.status == 404) {
                     this.$message.error("已存在信息，手机号、邮箱已被使用");
@@ -975,30 +1032,38 @@ export default {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "warning"
-          }).then(
-            () => {
-              this.addDialogVisible = false;
-              var that = this;
-              post("/students/addNewstu", {
-                stu: that.addForm
-              }).then(res => {
-                if (res.data.status == 200) {
-                  this.$message({
-                    showClose: true,
-                    message: "信息录入成功",
-                    type: "success"
-                  });
-                  that.select();
-                  that.addForm = {};
-                  that.selSta();
-                } else if (res.data.status == 404) {
-                  this.$message.error("已存在信息，学号、手机号、邮箱已被使用");
-                  that.addForm = {};
-                }
-              });
-            },
-            err => {}
-          );
+          })
+            .then(
+              () => {
+                var that = this;
+                post("/students/addNewstu", {
+                  stu: that.addForm
+                }).then(res => {
+                  if (res.data.status == 200) {
+                    that.selectWay.selByid = res.data.result.stuId;
+                    this.selectData = [];
+                    that.select();
+                    that.selSta();
+                    this.addDialogVisible = false;
+                    this.$message({
+                      showClose: true,
+                      message: "信息录入成功",
+                      type: "success"
+                    });
+                    that.addForm = {};
+                  } else if (res.data.status == 404) {
+                    this.$message.error(
+                      "已存在信息，学号、手机号、邮箱已被使用"
+                    );
+                    that.addForm = {};
+                  }
+                });
+              },
+              err => {
+                console.log(err);
+              }
+            )
+            .catch(() => {});
         } else {
           console.log("表单有误");
           return false;
@@ -1278,6 +1343,31 @@ export default {
           err => {}
         );
       }
+    },
+
+    /**
+     * 退出登录
+     */
+    exit() {
+      this.$confirm("你确定要退出吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          localStorage.removeItem("token");
+          this.$router.push("/login");
+          this.$message({
+            type: "success",
+            message: "退出成功!"
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消退出"
+          });
+        });
     }
   }
 };

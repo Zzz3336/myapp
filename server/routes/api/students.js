@@ -35,7 +35,6 @@ router.post('/selectByid', async (req, res, next) => {
       stuId: stuId
     }
   })
-  console.log(result);
   if (result.count == 0) {
     res.send({
       total: result.count,
@@ -67,7 +66,6 @@ router.post('/selectByname', async (req, res, next) => {
     offset: (currentPage - 1) * pageSize,
     limit: pageSize
   })
-  console.log(result);
   if (result.count == 0) {
     res.send({
       total: result.count,
@@ -98,7 +96,6 @@ router.post('/selectByidandname', async (req, res, next) => {
       stuId: stuId
     }
   })
-  console.log(result);
   if (result.count == 0) {
     res.send({
       total: result.count,
@@ -257,10 +254,11 @@ router.post('/addNewstu', async (req, res, next) => {
     timeIn: stu.timeIn,
     email: stu.email,
     telphone: stu.telphone
-  }).then(() => {
+  }).then(result => {
     res.send({
       msg: '录入成功',
       status: 200,
+      result
     })
   }, err => {
     res.send({

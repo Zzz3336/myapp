@@ -35,7 +35,7 @@ export default router
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-    if (sessionStorage.getItem("token") == "true") {
+    if (localStorage.getItem("token")) {
       next()
     } else {
       next({
@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
       })
     }
   } else {
-    if (sessionStorage.getItem("token") == "true") {
+    if (localStorage.getItem("token")) {
       next('/main')
     } else {
       next()
